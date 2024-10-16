@@ -1,0 +1,57 @@
+openapi: 3.0.0
+info:
+  title: Cuery API
+  version: 1.0.0
+paths:
+  /parse:
+    post:
+      summary: Parse and store X12 271 transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transaction:
+                  type: string
+      responses:
+        '200':
+          description: Successful parse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+  /query:
+    get:
+      summary: Query stored X12 271 transactions
+      parameters:
+        - in: query
+          name: subscriber_id
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: service_type
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful query
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscriber_name:
+                    type: string
+                  plan_name:
+                    type: string
+                  eligibility_date:
+                    type: string
