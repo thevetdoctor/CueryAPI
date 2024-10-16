@@ -7,6 +7,7 @@ import logger from './logger';
 import sequelize from './config/database';
 import userRoutes from './routes/index';
 import { HttpStatus } from './utils/httpStatus';
+import { HttpError } from './utils/httpError';
 
 const app: Application = express();
 
@@ -39,19 +40,18 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Handles all errors
-app.use((err: any, req: Request, res: Response, next: NextFunction): any => {
-  if (process.env.NODE_ENV === 'production') {
+app.use(
+  (err: HttpError, req: Request, res: Response, next: NextFunction): any => {
+    if (process.env.NODE_ENV === 'production') {
+      return res
+        .status(err.status || HttpStatus.BAD_REQUEST)
+        .send({ success: false });
+    }
+    if (err) logger.error(`Error: ${err.message}`);
     return res
       .status(err.status || HttpStatus.BAD_REQUEST)
-      .send({ success: false });
+      .send({ success: false, message: err.message });
   }
-  if (err) logger.error(`Error: ${err.message}`);
-  return res
-    .status(err.status || HttpStatus.BAD_REQUEST)
-    .send({ success: false, message: err.message });
-});
+);
 
-const port: number | string = process.env.PORT || 3000;
-app.listen(port, () => {
-  logger.info(`Server running on http://localhost:${port}`);
-});
+export default app;

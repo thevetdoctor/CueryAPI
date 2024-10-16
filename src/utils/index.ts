@@ -12,6 +12,8 @@ import {
   Transaction,
   TRN,
 } from '../types';
+import { HttpError } from './httpError';
+import { HttpStatus } from './httpStatus';
 
 export function removeSpaces(input: string): string {
   return input.replace(/\s+/g, '');
@@ -35,9 +37,15 @@ export function validateSegments(input: string): void {
     if (startTag.length > 0) {
       const requiredFields = Object.values(EDITags);
       if (!requiredFields.includes(startTag))
-        throw new Error(`Incorrect tag on segment: '${segment}'`);
+        throw new HttpError(
+          HttpStatus.BAD_REQUEST,
+          `Incorrect tag on segment: '${segment}'`
+        );
     } else {
-      throw new Error(`Missing tag on segment: '${segment}'`);
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        `Missing tag on segment: '${segment}'`
+      );
     }
   }
 }
@@ -117,7 +125,7 @@ export function parseTransactionString(input: string): Transaction | null {
       case 'HL':
         transaction.HL.push({
           element01: elements[1],
-          element02: elements[2] || undefined, // Optional
+          element02: elements[2] || undefined,
           element03: elements[3],
           element04: elements[4],
         });
@@ -162,7 +170,7 @@ export function parseTransactionString(input: string): Transaction | null {
       case 'EB':
         transaction.EB.push({
           element01: elements[1],
-          element02: elements[2] || undefined, // Optional
+          element02: elements[2] || undefined,
         });
         break;
 
@@ -188,7 +196,6 @@ export function parseTransactionString(input: string): Transaction | null {
         break;
 
       default:
-        // Unknown segment type
         break;
     }
   }
@@ -203,6 +210,9 @@ export function checkForRequiredFields(
   const missingFields = requiredFields.filter(field => !parsed.includes(field));
 
   if (missingFields.length > 0) {
-    throw new Error(`Missing required field(s): '${[...missingFields]}'`);
+    throw new HttpError(
+      HttpStatus.BAD_REQUEST,
+      `Missing required field(s): '${[...missingFields]}'`
+    );
   }
 }

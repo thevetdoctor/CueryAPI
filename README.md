@@ -21,35 +21,40 @@ Before you begin, ensure you have the following installed:
 
 ## Project Setup
 
-### 1. Clone the repository:
-
 ```bash
+
 git clone https://github.com/your-username/cuery-api.git
+
 cd cuery-api
 
 npm install
 
-If you're in development mode and want hot-reloading, run:
+###If you're in development mode and want hot-reloading, run:
 
 npm run dev
 
-Otherwise, to run the production build, use:
+###Otherwise, to run the production build, use:
 
 npm start
 
-
-Once the server is running, you can access the API at:
+###Once the server is running, you can access the API at:
 
 http://localhost:3000/
 
-
-To view the Swagger API documentation, navigate to:
+###To view the Swagger API documentation, navigate to:
 
 http://localhost:3000/api-docs
 
-
-All logs are saved in the logs directory:
+###All logs are saved in the logs directory:
 
 Errors are logged in logs/error.log
 Combined logs (info and errors) are logged in logs/combined.log
+
+### All test files ate in src/tests
+### To run unit tests
+npm run test
+
+### To run tests with coverage
+npm run test:coverage
+
 ```
